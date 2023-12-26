@@ -5,6 +5,7 @@ class WolframCA:
     def __init__(
             self,
             width,
+            height,
             steps,
             rule_number: int,
             init_method="random",
@@ -12,9 +13,10 @@ class WolframCA:
             init_values=np.array([])
     ):
         self.width = width
+        self.height = height
         self.steps = steps
         self.rule_binary = format(rule_number, '08b')
-        self.board = np.zeros(shape=(steps + 1, width), dtype=int)
+        self.board = np.zeros(shape=(height, width), dtype=int)
         self.initialize(init_method, init_values, random_seed)
 
     def initialize(self, init_method, init_values, random_seed):
@@ -29,13 +31,10 @@ class WolframCA:
             case "specified":
                 self.board[0] = init_values
 
-    def get_next_state(self, neighbors):
-        rule_idx = abs(int(''.join(map(str, neighbors)), 2) - 7)
-        return int(self.rule_binary[rule_idx])
-
     def evolve_step(self, step):
-        current_states = self.board[step]
-        next_states = self.board[step + 1]
+        current_row_idx = step if step < self.height else self.height - 1
+        current_states = self.board[current_row_idx]
+        next_states = np.zeros(self.width, dtype=int)
 
         for col in range(self.width):
             left_neighbor = 0 if col == 0 else current_states[col - 1]
@@ -44,6 +43,22 @@ class WolframCA:
             next_state = self.get_next_state(neighbors)
             next_states[col] = next_state
 
+        self.store_next_states(step, next_states)
+
     def evolve(self):
         for step in range(self.steps):
             self.evolve_step(step)
+
+    def get_next_state(self, neighbors):
+        rule_idx = abs(int(''.join(map(str, neighbors)), 2) - 7)
+        return int(self.rule_binary[rule_idx])
+
+    def store_next_states(self, step, next_states):
+        if step < self.height - 1:
+            self.board[step + 1] = next_states
+        else:
+            self.shift_down(next_states)
+
+    def shift_down(self, next_states):
+        self.board = np.delete(self.board, (0,), axis=0)
+        self.board = np.vstack([self.board, next_states])
