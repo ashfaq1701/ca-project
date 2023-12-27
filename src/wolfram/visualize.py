@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-from ca import WolframCA
+from wolfram.ca import WolframCA
 
 
 def generator(ca):
