@@ -6,20 +6,18 @@ class WolframCA:
             self,
             width,
             height,
-            steps,
             rule_number: int,
             init_method="random",
             random_seed=42,
-            init_values=np.array([])
+            init_states=np.array([])
     ):
         self.width = width
         self.height = height
-        self.steps = steps
         self.rule_binary = format(rule_number, '08b')
         self.board = np.zeros(shape=(height, width), dtype=int)
-        self.initialize(init_method, init_values, random_seed)
+        self.initialize(init_method, init_states, random_seed)
 
-    def initialize(self, init_method, init_values, random_seed):
+    def initialize(self, init_method, init_states, random_seed):
         match init_method:
             case "random":
                 np.random.seed(random_seed)
@@ -29,7 +27,7 @@ class WolframCA:
                 row[int(self.width / 2)] = 1
                 self.board[0] = row
             case "specified":
-                self.board[0] = init_values
+                self.board[0] = init_states
 
     def evolve_step(self, step):
         current_row_idx = step if step < self.height else self.height - 1
@@ -45,8 +43,8 @@ class WolframCA:
 
         self.store_next_states(step, next_states)
 
-    def evolve(self):
-        for step in range(self.steps):
+    def evolve(self, steps):
+        for step in range(steps):
             self.evolve_step(step)
 
     def get_next_state(self, neighbors):
