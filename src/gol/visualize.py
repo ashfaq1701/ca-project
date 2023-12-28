@@ -1,3 +1,4 @@
+import numpy as np
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 
@@ -29,7 +30,7 @@ def evolve_and_visualize(ca: GameOfLife, generations):
         update,
         fargs=(img,),
         frames=generator(ca, generations),
-        interval=200,
+        interval=300,
         save_count=generations + 1
     )
     return animation
@@ -44,3 +45,13 @@ def evolve_and_visualize_at_end(ca: GameOfLife, generations):
     ca.evolve(generations)
     ax.imshow(ca.board, cmap="Blues")
     plt.show()
+
+
+def parse_pattern(filepath, height, width):
+    with open(filepath, "r") as f:
+        full_text = f.read()
+
+    pattern_arr = [[0 if ch == '.' else 1 for ch in line] for line in full_text.split("\n")]
+    padded_pattern_arr = [pattern_row + [0] * max(width - len(pattern_row), 0) for pattern_row in pattern_arr]
+    residue_array = np.zeros((height - len(padded_pattern_arr), width), dtype=int)
+    return np.vstack([padded_pattern_arr, residue_array])

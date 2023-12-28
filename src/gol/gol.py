@@ -33,7 +33,7 @@ class GameOfLife:
                 alive_neighbor_count = 0
 
                 for (nei_r, nei_c) in neighbors:
-                    if 0 <= nei_r < self.height and 0 <= nei_c < self.width and self.board[nei_r, nei_c] == 1:
+                    if 0 <= nei_r < self.height and 0 <= nei_c < self.width and abs(self.board[nei_r, nei_c]) == 1:
                         alive_neighbor_count += 1
 
                 if self.board[row, col] == 1 and (alive_neighbor_count < 2 or alive_neighbor_count > 3):
@@ -52,5 +52,3 @@ class GameOfLife:
     def evolve(self, generations):
         for _ in range(generations):
             self.evolve_step()
-
-
