@@ -1,28 +1,28 @@
 import numpy as np
+
+from core.ca import CA
 from ga import GA
 from gol.gol import GameOfLife, create_gol_instance_from_board
 
 
 class GAGol(GA):
     def __init__(self,
-                 width,
-                 height,
                  target,
                  population_size,
                  n_generations,
                  crossover_rate,
                  mutation_rate,
                  retention_rate,
+                 random_selection_rate,
                  steps):
         super().__init__(
-            width,
-            height,
             target,
             population_size,
             n_generations,
             crossover_rate,
             mutation_rate,
             retention_rate,
+            random_selection_rate,
             steps
         )
 
@@ -52,6 +52,7 @@ class GAGol(GA):
         child_board[cross_indices] = winner_board[cross_indices]
         return create_gol_instance_from_board(child_board)
 
-    def fitness_function(self, individual):
+    def fitness_function(self, individual: CA):
         n_genes = self.width * self.height
-        return float(np.sum(individual.board == self.target)) / float(n_genes)
+        resultant_board = individual.evolve(self.steps)
+        return float(np.sum(resultant_board == self.target)) / float(n_genes)

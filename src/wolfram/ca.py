@@ -28,9 +28,14 @@ class WolframCA(CA):
             case "specified":
                 self.board[0] = initial_states
 
-    def evolve_step(self, step):
+    def evolve_step(self, step, current_state=None):
+        if current_state is not None:
+            board = current_state
+        else:
+            board = self.board.copy()
+
         current_row_idx = step if step < self.height else self.height - 1
-        current_states = self.board[current_row_idx]
+        current_states = board[current_row_idx]
         next_states = np.zeros(self.width, dtype=int)
 
         for col in range(self.width):
@@ -40,22 +45,37 @@ class WolframCA(CA):
             next_state = self.get_next_state(neighbors)
             next_states[col] = next_state
 
-        self.store_next_states(step, next_states)
+        board = self.store_next_states(step, next_states, board)
+        return board
 
     def evolve(self, steps):
+        current_board = None
+
         for step in range(steps):
-            self.evolve_step(step)
+            current_board = self.evolve_step(step, current_board)
+
+        return current_board
+
+    def evolve_and_apply(self, steps):
+        current_board = self.evolve(steps)
+        self.apply(current_board)
+
+    def apply(self, board):
+        self.board = board
 
     def get_next_state(self, neighbors):
         rule_idx = abs(int(''.join(map(str, neighbors)), 2) - 7)
         return int(self.rule_binary[rule_idx])
 
-    def store_next_states(self, step, next_states):
+    def store_next_states(self, step, next_states, board):
         if step < self.height - 1:
-            self.board[step + 1] = next_states
+            board[step + 1] = next_states
         else:
-            self.shift_down(next_states)
+            board = self.shift_down(next_states, board)
 
-    def shift_down(self, next_states):
-        self.board = np.delete(self.board, (0,), axis=0)
-        self.board = np.vstack([self.board, next_states])
+        return board
+
+    def shift_down(self, next_states, board):
+        board = np.delete(board, (0,), axis=0)
+        board = np.vstack([board, next_states])
+        return board
