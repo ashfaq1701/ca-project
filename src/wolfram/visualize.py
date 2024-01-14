@@ -17,7 +17,7 @@ def update(frame, img):
     return img,
 
 
-def evolve_and_visualize(ca: WolframCA, generations):
+def evolve_and_visualize(ca: WolframCA, steps):
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.set_title("Wolfram Cellular Automaton")
     ax.set_xticks([])
@@ -28,19 +28,19 @@ def evolve_and_visualize(ca: WolframCA, generations):
         fig,
         update,
         fargs=(img,),
-        frames=generator(ca, generations),
+        frames=generator(ca, steps),
         interval=200,
-        save_count=generations + 1
+        save_count=steps + 1
     )
     return animation
 
 
-def evolve_and_visualize_at_end(ca: WolframCA, generations):
+def evolve_and_visualize_at_end(ca: WolframCA, steps):
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.set_title("Wolfram Cellular Automaton")
     ax.set_xticks([])
     ax.set_yticks([])
 
-    ca.evolve(generations)
+    ca.evolve(steps)
     ax.imshow(ca.board, cmap="Blues")
     plt.show()
