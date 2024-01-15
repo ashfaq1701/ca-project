@@ -15,7 +15,8 @@ class GA(ABC):
                  mutation_rate,
                  retention_rate,
                  random_selection_rate,
-                 steps):
+                 steps,
+                 fitness_function_name="mae"):
         self.width = len(target)
         self.height = len(target[0])
         self.target = target
@@ -28,6 +29,7 @@ class GA(ABC):
         self.steps = steps
         self.population = self.generate_population()
         self.population_fitness = self.get_population_fitness()
+        self.fitness_function_name = fitness_function_name
 
     def get_population_fitness(self):
         return np.array([self.fitness_function(ind) for ind in self.population])

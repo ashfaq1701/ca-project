@@ -14,7 +14,8 @@ class GAGol(GA):
                  mutation_rate,
                  retention_rate,
                  random_selection_rate,
-                 steps):
+                 steps,
+                 fitness_function_name="mae"):
         super().__init__(
             target,
             population_size,
@@ -23,7 +24,8 @@ class GAGol(GA):
             mutation_rate,
             retention_rate,
             random_selection_rate,
-            steps
+            steps,
+            fitness_function_name
         )
 
     def generate_population(self):
@@ -53,6 +55,13 @@ class GAGol(GA):
         return create_gol_instance_from_board(child_board)
 
     def fitness_function(self, individual: CA):
+        match self.fitness_function_name:
+            case 'mae':
+                return self.mae_fitness_function(individual)
+            case _:
+                raise KeyError("Wrong fitness function name passed")
+
+    def mae_fitness_function(self, individual: CA):
         n_genes = self.width * self.height
         resultant_board = individual.evolve(self.steps)
         return float(np.sum(resultant_board == self.target)) / float(n_genes)
