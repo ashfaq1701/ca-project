@@ -3,6 +3,10 @@ import numpy as np
 from core.ca import CA
 
 
+def create_wolfram_ca_instance_from_pattern_and_rule_number(pattern, rule_number):
+    return WolframCA(len(pattern), len(pattern), rule_number, init_method="specified", initial_states=pattern)
+
+
 class WolframCA(CA):
     def __init__(
             self,
@@ -13,6 +17,7 @@ class WolframCA(CA):
             initial_states=np.array([])
     ):
         super().__init__(width, height, init_method, initial_states)
+        self.rule_number = rule_number
         self.rule_binary = format(rule_number, '08b')
         self.board = np.zeros(shape=(height, width), dtype=int)
         self.initialize(init_method, initial_states)

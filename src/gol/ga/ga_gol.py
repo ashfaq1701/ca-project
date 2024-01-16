@@ -1,5 +1,5 @@
 import numpy as np
-
+from skimage.metrics import structural_similarity as ssim
 from core.ca import CA
 from ga import GA
 from gol.gol import GameOfLife, create_gol_instance_from_board
@@ -58,6 +58,8 @@ class GAGol(GA):
         match self.fitness_function_name:
             case 'mae':
                 return self.mae_fitness_function(individual)
+            case 'structural_similarity':
+                return self.structural_fitness_function(individual)
             case _:
                 raise KeyError("Wrong fitness function name passed")
 
@@ -65,3 +67,7 @@ class GAGol(GA):
         n_genes = self.width * self.height
         resultant_board = individual.evolve(self.steps)
         return float(np.sum(resultant_board == self.target)) / float(n_genes)
+
+    def structural_fitness_function(self, individual: CA):
+        resultant_board = individual.evolve(self.steps)
+        return ssim(resultant_board, self.target, data_range=1.0)

@@ -48,11 +48,14 @@ def evolve_and_visualize_at_end(ca: CA, steps):
     plt.show()
 
 
-def visualize_current_state(ca, fitness=None):
+def visualize_current_state(ca, fitness=None, idx=None, export_path=None):
     title = "Cellular Automaton"
 
     if fitness:
         title = f"{title}, Fitness = {fitness}"
+
+    if idx is not None:
+        title = f"Pattern #{idx} - {title}"
 
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.set_title(title)
@@ -66,3 +69,19 @@ def visualize_current_state(ca, fitness=None):
 
     ax.imshow(board, cmap="Blues")
     plt.show()
+
+
+def export_current_state(ca, title, export_path):
+    if isinstance(ca, CA):
+        board = ca.board
+    else:
+        board = ca
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.set_title(title)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.imshow(board, cmap="Blues")
+    plt.savefig(export_path)
+    plt.close()
+

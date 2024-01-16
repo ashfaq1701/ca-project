@@ -27,9 +27,9 @@ class GA(ABC):
         self.retention_size = int(self.population_size * retention_rate)
         self.random_selection_rate = random_selection_rate
         self.steps = steps
+        self.fitness_function_name = fitness_function_name
         self.population = self.generate_population()
         self.population_fitness = self.get_population_fitness()
-        self.fitness_function_name = fitness_function_name
 
     def get_population_fitness(self):
         return np.array([self.fitness_function(ind) for ind in self.population])

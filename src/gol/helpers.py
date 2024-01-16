@@ -1,5 +1,8 @@
 import numpy as np
 
+from gol.ga.ga_gol import GAGol
+from visualize import visualize_current_state, export_current_state
+
 
 def parse_sized_pattern(filepath, height, width):
     with open(filepath, "r") as f:

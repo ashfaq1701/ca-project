@@ -9,6 +9,7 @@ pandas = "*"
 jupyter = "*"
 matplotlib = "*"
 ffmpeg-python = "*"
+scikit-image = "*"
 
 [dev-packages]
 
