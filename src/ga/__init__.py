@@ -48,7 +48,12 @@ class GA(ABC):
             print(f"Generation {generation}: Best fitness {self.get_best_fitness()}")
             if self.callback_function is not None and self.callback_interval is not None:
                 if generation % self.callback_interval == 0:
-                    self.callback_function(generation, self.get_fittest_individual())
+                    self.callback_function(
+                        generation,
+                        self.get_fittest_individual(),
+                        self.get_best_fitness(),
+                        self.steps
+                    )
 
     def evolution_step(self):
         ranked_fitness_indices = np.argsort(self.population_fitness)[::-1]
