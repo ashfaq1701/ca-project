@@ -15,7 +15,9 @@ class GAGol(GA):
                  retention_rate,
                  random_selection_rate,
                  steps,
-                 fitness_function_name="mae"):
+                 fitness_function_name,
+                 callback_function=None,
+                 callback_interval=None):
         super().__init__(
             target,
             population_size,
@@ -25,7 +27,9 @@ class GAGol(GA):
             retention_rate,
             random_selection_rate,
             steps,
-            fitness_function_name
+            fitness_function_name,
+            callback_function,
+            callback_interval
         )
 
     def generate_population(self):

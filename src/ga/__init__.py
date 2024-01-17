@@ -16,7 +16,9 @@ class GA(ABC):
                  retention_rate,
                  random_selection_rate,
                  steps,
-                 fitness_function_name="mae"):
+                 fitness_function_name,
+                 callback_function=None,
+                 callback_interval=None):
         self.width = len(target)
         self.height = len(target[0])
         self.target = target
@@ -30,6 +32,9 @@ class GA(ABC):
         self.fitness_function_name = fitness_function_name
         self.population = self.generate_population()
         self.population_fitness = self.get_population_fitness()
+        self.best_fitness_over_generations = []
+        self.callback_function = callback_function
+        self.callback_interval = callback_interval
 
     def get_population_fitness(self):
         return np.array([self.fitness_function(ind) for ind in self.population])
@@ -41,6 +46,9 @@ class GA(ABC):
         for generation in range(self.n_generations):
             self.evolution_step()
             print(f"Generation {generation}: Best fitness {self.get_best_fitness()}")
+            if self.callback_function is not None and self.callback_interval is not None:
+                if generation % self.callback_interval == 0:
+                    self.callback_function(generation, self.get_fittest_individual())
 
     def evolution_step(self):
         ranked_fitness_indices = np.argsort(self.population_fitness)[::-1]
@@ -84,6 +92,9 @@ class GA(ABC):
             self.population.append(new_ind)
             self.population_fitness = np.append(self.population_fitness, self.fitness_function(new_ind))
 
+        best_fitness = max(self.population_fitness)
+        self.best_fitness_over_generations.append(best_fitness)
+
     def get_top_n_fittest_individuals(self, n):
         ranked_fitness_indices = np.argsort(self.population_fitness)[::-1]
         return [
@@ -95,6 +106,13 @@ class GA(ABC):
 
     def get_best_fitness(self):
         return np.max(self.population_fitness)
+
+    def get_best_fitness_over_generations(self):
+        return self.best_fitness_over_generations
+
+    def get_fittest_individual(self):
+        max_fitness_idx = np.argmax(self.population_fitness)
+        return self.population[max_fitness_idx]
 
     def generate_population(self) -> [CA]:
         pass
