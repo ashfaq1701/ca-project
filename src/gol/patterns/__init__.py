@@ -61,7 +61,7 @@ def get_and_save_pattern_1(height, width, steps):
     )
 
     export_current_state(
-        before,
+        after,
         f"Pattern #1 Step {steps}",
         export_path=f"../../../data/gol-ga/warmup/pattern_1_step_{steps}.png"
     )
@@ -79,7 +79,7 @@ def get_and_save_pattern_2(height, width, steps):
     )
 
     export_current_state(
-        before,
+        after,
         f"Pattern #2 Step {steps}",
         export_path=f"../../../data/gol-ga/warmup/pattern_2_step_{steps}.png"
     )
